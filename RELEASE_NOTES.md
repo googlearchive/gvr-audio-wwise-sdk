@@ -1,5 +1,11 @@
 # Release Notes
 
+## GVR Audio Wwise SDK v0.5.0
+* Improved early-reflection rendering.
+* Fixed a bug when Wwise is remotely connected to a game engine.
+  ([issue](https://github.com/googlevr/gvr-audio-wwise-sdk/issues/6))
+* Performance optimizations.
+
 ## GVR Audio Wwise SDK v0.4.0
 * Fixed constant performance overhead issue when no voices are present. Plugins
   stop processing when a corresponding bus falls silent now.

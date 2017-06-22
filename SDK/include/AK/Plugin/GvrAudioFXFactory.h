@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef VRAUDIO_WWISE_GVR_AUDIO_FX_FACTORY_H_
-#define VRAUDIO_WWISE_GVR_AUDIO_FX_FACTORY_H_
+#ifndef VR_AUDIO_PLATFORM_WWISE_WWISE_FX_FACTORY_H_
+#define VR_AUDIO_PLATFORM_WWISE_WWISE_FX_FACTORY_H_
 
 namespace vraudio {
 namespace wwise {
@@ -25,4 +25,4 @@ AK_STATIC_LINK_PLUGIN(GvrAudioRoomEffectsFXAttachment)
 }  // namespace wwise
 }  // namespace vraudio
 
-#endif  // VRAUDIO_WWISE_GVR_AUDIO_FX_FACTORY_H_
+#endif  // VR_AUDIO_PLATFORM_WWISE_WWISE_FX_FACTORY_H_
