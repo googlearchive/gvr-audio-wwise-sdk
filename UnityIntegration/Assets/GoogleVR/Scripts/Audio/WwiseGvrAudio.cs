@@ -41,24 +41,25 @@ public static class WwiseGvrAudio {
       // Pass the room properties into a pointer.
       IntPtr roomPropertiesPtr = Marshal.AllocHGlobal(roomPropertiesSize);
       Marshal.StructureToPtr(roomProperties, roomPropertiesPtr, false);
-      AkSoundEngine.SendPluginCustomGameData(roomEffectsBusId, AkSoundEngine.AK_MIXER_FX_SLOT,
-                                             roomPropertiesPtr, (uint) roomPropertiesSize);
+      AkSoundEngine.SendPluginCustomGameData(roomEffectsBusId, null, AkPluginType.AkPluginTypeMixer,
+                                             companyId, roomEffectsPluginId, roomPropertiesPtr,
+                                             (uint) roomPropertiesSize);
       Marshal.FreeHGlobal(roomPropertiesPtr);
     } else {
       // Set the room properties to null, which will effectively disable the room effects.
-      AkSoundEngine.SendPluginCustomGameData(roomEffectsBusId, AkSoundEngine.AK_MIXER_FX_SLOT,
-                                             IntPtr.Zero, 0U);
+      AkSoundEngine.SendPluginCustomGameData(roomEffectsBusId, null, AkPluginType.AkPluginTypeMixer,
+                                             companyId, roomEffectsPluginId, IntPtr.Zero, 0U);
     }
   }
 
   /// Returns whether the listener is currently inside the given |room| boundaries.
   public static bool IsListenerInsideRoom(WwiseGvrAudioRoom room) {
     // Compute the room position relative to the listener.
-    AkSoundEngine.GetListenerPosition(0, listenerTransform);
-    Vector3 listenerPosition = new Vector3(listenerTransform.Position().X,
-                                           listenerTransform.Position().Y,
-                                           listenerTransform.Position().Z);
-    Vector3 relativePosition = listenerPosition - room.transform.position;
+    if (ListenerTransform == null) {
+      // Listener does not exist, skip processing.
+      return false;
+    }
+    Vector3 relativePosition = ListenerTransform.position - room.transform.position;
     Quaternion rotationInverse = Quaternion.Inverse(room.transform.rotation);
     // Set the size of the room as the boundary and return whether the listener is inside.
     bounds.size = Vector3.Scale(room.transform.lossyScale, room.size);
@@ -175,6 +176,28 @@ public static class WwiseGvrAudio {
     return roomProperties;
   }
 
+  // Listener transform.
+  private static Transform ListenerTransform {
+    get {
+      if (listenerTransform == null) {
+        var audioListener = GameObject.FindObjectOfType<AkAudioListener>();
+        if (audioListener != null && audioListener.isDefaultListener) {
+          listenerTransform = audioListener.transform;
+        } else {
+          Debug.LogError("Cannot find the default AkAudioListener in the scene.");
+        }
+      }
+      return listenerTransform;
+    }
+  }
+  private static Transform listenerTransform = null;
+
+  // Company ID reserved for Google third-party plugins.
+  private const uint companyId = (uint) 272;
+
+  // Plugin ID for Google VR room effects.
+  private const uint roomEffectsPluginId = (uint) 200;
+
   // Right-handed to left-handed matrix converter (and vice versa).
   private static readonly Matrix4x4 flipZ = Matrix4x4.Scale(new Vector3(1, 1, -1));
 
@@ -186,7 +209,4 @@ public static class WwiseGvrAudio {
 
   // Container to store the currently active rooms in the scene.
   private static List<WwiseGvrAudioRoom> enabledRooms = new List<WwiseGvrAudioRoom>();
-
-  // Listener transform.
-  private static AkTransform listenerTransform = new AkTransform();
 }

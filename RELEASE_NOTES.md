@@ -1,5 +1,9 @@
 # Release Notes
 
+## GVR Audio Wwise SDK v0.6.0
+* Updated Wwise SDK version of the plugins to v2017.1.0 (build 6302).
+* Performance optimizations.
+
 ## GVR Audio Wwise SDK v0.5.0
 * Improved early-reflection rendering.
 * Fixed a bug when Wwise is remotely connected to a game engine.
